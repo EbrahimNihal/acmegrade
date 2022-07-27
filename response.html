@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Cart</title>
+    <link rel="stylesheet" rel="preload" href="index.css">
+    <script src="https://kit.fontawesome.com/ea7aa5008a.js" crossorigin="anonymous"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body x-data="getData()">
+    <header class="flex justify-between items-center h-20 p-5 bg-gray-800 static float-none ">
+        <div class="relative" @mouseleave="openMobile=window.innerWidth<768?false:true"
+            @resize.window="openMobile = window.innerWidth>768?true:false;show=window.innerWidth<768?true:false">
+            <div x-cloak x-init="show = window.innerWidth<768?true:false" x-show="show" @mouseover="openMobile= true"
+                x-cloak><i class="text-white fa-solid fa-bars"></i></div>
+            <nav class="flex flex-col bg-white text-gray-600  md:text-white w-56 p-2 rounded-md absolute md:static md:top-0 md:bg-gray-800 md:flex-row items-start gap-4"
+                x-show="openMobile" x-init="openMobile = window.innerWidth>768?true:false"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 transform scale-90"
+                x-transition:enter-end="opacity-100 transform scale-100"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100 transform scale-100"
+                x-transition:leave-end="opacity-0 transform scale-90">
+                <a href="../agmegrade/view_products.php"
+                    class="hover:text-black md:hover:bg-white shrink-0 p-2 rounded-md font-bold">View Products</a>
+                <a href="/#" class="hover:text-black md:hover:bg-white  shrink-0 p-2 rounded-md font-bold">Previous
+                    Orders</a>
+            </nav>
+        </div>
+        <div class="flex items-center align-middle gap-4">
+            <div class="text-white hover:bg-white hover:text-black p-2 relative rounded-md" @click="viewCart()">
+                <i class="fa-solid fa-cart-arrow-down fa-2x"></i>
+                <span class='bg-slate-400 text-black text-xs px-2 font-bold rounded-full absolute top-0 -right-0.5'
+                    x-text="count"></span>
+            </div>
+            <div class="hover:bg-white shrink-0 p-2 rounded-md relative" @mouseleave="openUser=false">
+                <img class="h-9 w-9 object-cover shadow-2xl shadow-vue rounded-full"
+                    src='https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80'
+                    alt="profile image" @mouseover="openUser= true" />
+                <div class="absolute h-auto" x-show="openUser" x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 transform scale-90"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                    x-transition:leave="transition ease-in duration-300"
+                    x-transition:leave-start="opacity-100 transform scale-100"
+                    x-transition:leave-end="opacity-0 transform scale-90" x-cloak>
+                    <ul class="top-3 -left-32 w-44 relative bg-white rounded-md shadow px-6 py-8">
+                        <li class="py-1"><a
+                                class="block text-gray-600 text-base font-bold hover:text-black cursor-pointer">View
+                                Profile
+                            </a></li>
+                        <li class="py-1"><a
+                                class="block text-gray-600 text-base font-bold hover:text-black cursor-pointer">Edit
+                                Profile
+                            </a></li>
+                        <li class="py-1"><a
+                                class="block text-gray-600 text-base font-bold hover:text-black cursor-pointer"
+                                href="logout.php">Logout
+                            </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="h-screen bg-gray-300 overflow-y-scroll md:overflow-y-clip">
+        <div class="py-12">
+            <div class="max-w-lg mx-auto bg-gray-100 shadow-lg rounded-lg  md:max-w-5xl">
+                <div class="md:flex ">
+                    <div class="w-full px-5 py-5">
+                        <div class="md:grid md:grid-cols-3 gap-2 ">
+                            <div class="col-span-2 p-5">
+                                <h1 class="text-xl font-medium ">Shopping Cart</h1>
+                                <div class='flex justify-between items-center mt-6 pt-6' data-price='500' data-pid='2'
+                                    id='2'>
+                                    <div class='flex  items-center'>
+                                        <img src='../agmegrade/img/2022_05_08_12_58_06pm.jpg' width='60'
+                                            class='rounded-lg '>
+                                        <div class='flex flex-col ml-3'>
+                                            <span class='md:text-md font-medium'>Lock</span>
+                                        </div>
+                                    </div>
+                                    <div class='flex justify-center items-center' data-price='500' data-pid='2'>
+                                        <div class='pr-8 flex '>
+                                            <span class='font-semibold'>-</span>
+                                            <input type='text'
+                                                class='focus:outline-none bg-gray-100 border h-6 w-8 rounded text-sm px-2 mx-2'
+                                                value='1'>
+                                            <span class='font-semibold'>+</span>
+                                        </div>
+                                        <div class='pr-8 '>
+                                            <span class='text-xs font-medium'>₹ 500</span>
+                                        </div>
+                                        <div data-price='500' data-pid='2' @click='removeFromCart($event)'>
+                                            <i class='fa fa-close text-xs font-medium' data-price='500'
+                                                data-pid='2'></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='flex justify-between items-center mt-6 pt-6' data-price='45000' data-pid='5'
+                                    id='5'>
+                                    <div class='flex  items-center'>
+                                        <img src='../agmegrade/img/2022_05_14_09_21_30am.jpg' width='60'
+                                            class='rounded-lg '>
+                                        <div class='flex flex-col ml-3'>
+                                            <span class='md:text-md font-medium'>Hp encry</span>
+                                        </div>
+                                    </div>
+                                    <div class='flex justify-center items-center' data-price='45000' data-pid='5'>
+                                        <div class='pr-8 flex '>
+                                            <span class='font-semibold'>-</span>
+                                            <input type='text'
+                                                class='focus:outline-none bg-gray-100 border h-6 w-8 rounded text-sm px-2 mx-2'
+                                                value='1'>
+                                            <span class='font-semibold'>+</span>
+                                        </div>
+                                        <div class='pr-8 '>
+                                            <span class='text-xs font-medium'>₹ 45000</span>
+                                        </div>
+                                        <div data-price='45000' data-pid='5' @click='removeFromCart($event)'>
+                                            <i class='fa fa-close text-xs font-medium' data-price='45000'
+                                                data-pid='5'></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center mt-6 pt-6 border-t">
+                                    <div class="flex items-center">
+                                        <i class="fa fa-arrow-left text-sm pr-2"></i>
+                                        <a href="../agmegrade/user_view_products.php"
+                                            class="text-md  font-medium text-blue-500">Continue Shopping</a>
+                                    </div>
+                                    <div class="flex justify-center items-center">
+                                        <span class="text-sm font-medium text-gray-500 mr-1">Subtotal:</span>
+                                        <span class="text-lg font-bold text-gray-800 "
+                                            x-text="'₹'.concat(' ',order.totalPrice)"> ₹ 45500</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=" p-5 bg-gray-800 rounded overflow-visible">
+                                <span class="text-xl font-medium text-gray-100 block pb-3">Address Details</span>
+
+                                <div class="flex justify-center flex-col pt-3">
+                                    <label class="text-xs text-gray-200 ">Full Name</label>
+                                    <input type='text'
+                                        class='focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4'
+                                        placeholder='Pulavar Mohideen'>
+                                </div>
+                                <div class="flex justify-center flex-col pt-3">
+                                    <label class="text-xs text-gray-200 ">Mobile Number</label>
+                                    <input type="tel" pattern="[0-9]{10}"
+                                        class="focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4">
+                                </div>
+                                <div class="flex justify-center flex-col pt-3">
+                                    <label class="text-xs text-gray-200 ">Address lane 1</label>
+                                    <input type="text"
+                                        class="focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4"
+                                        placeholder="Flat, House no., Building, Company, Apartment">
+                                </div>
+                                <div class="flex justify-center flex-col pt-3">
+                                    <label class="text-xs text-gray-200 ">Address lane 2</label>
+                                    <input type="text"
+                                        class="focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4"
+                                        placeholder="Area, Street, Sector, Village">
+                                </div>
+                                <div class="flex justify-center flex-col pt-3">
+                                    <label class="text-xs text-gray-200 ">City</label>
+                                    <input type="text"
+                                        class="focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4"
+                                        placeholder="City">
+                                </div>
+                                <div class="flex justify-center flex-col pt-3">
+                                    <label class="text-xs text-gray-200 ">Landmark</label>
+                                    <input type="text"
+                                        class="focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4"
+                                        placeholder="Eg: near apollo hospital">
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 pt-2 mb-3">
+                                    <div class="flex justify-center flex-col pt-3">
+                                        <label class="text-xs text-gray-200 ">State</label>
+                                        <select name="state" id="state" class="bg-gray-800 text-white">
+                                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands
+                                            </option>
+                                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                            <option value="Assam">Assam</option>
+                                            <option value="Bihar">Bihar</option>
+                                            <option value="Chandigarh">Chandigarh</option>
+                                            <option value="Chhattisgarh">Chhattisgarh</option>
+                                            <option value="Dadar and Nagar Haveli">Dadar and Nagar Haveli</option>
+                                            <option value="Daman and Diu">Daman and Diu</option>
+                                            <option value="Delhi">Delhi</option>
+                                            <option value="Lakshadweep">Lakshadweep</option>
+                                            <option value="Puducherry">Puducherry</option>
+                                            <option value="Goa">Goa</option>
+                                            <option value="Gujarat">Gujarat</option>
+                                            <option value="Haryana">Haryana</option>
+                                            <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                            <option value="Jharkhand">Jharkhand</option>
+                                            <option value="Karnataka">Karnataka</option>
+                                            <option value="Kerala">Kerala</option>
+                                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                            <option value="Maharashtra">Maharashtra</option>
+                                            <option value="Manipur">Manipur</option>
+                                            <option value="Meghalaya">Meghalaya</option>
+                                            <option value="Mizoram">Mizoram</option>
+                                            <option value="Nagaland">Nagaland</option>
+                                            <option value="Odisha">Odisha</option>
+                                            <option value="Punjab">Punjab</option>
+                                            <option value="Rajasthan">Rajasthan</option>
+                                            <option value="Sikkim">Sikkim</option>
+                                            <option value="Tamil Nadu">Tamil Nadu</option>
+                                            <option value="Telangana">Telangana</option>
+                                            <option value="Tripura">Tripura</option>
+                                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                            <option value="Uttarakhand">Uttarakhand</option>
+                                            <option value="West Bengal">West Bengal</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex justify-center flex-col pt-3">
+                                        <label class="text-xs text-gray-200">PinCode</label>
+                                        <input type="number"
+                                            class="focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4"
+                                            placeholder="6 Digit PinCode">
+                                    </div>
+                                </div>
+                                <button
+                                    class="h-12 w-full bg-blue-500 rounded focus:outline-none text-white hover:bg-blue-600">Check
+                                    Out</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    <footer class="p-4 left-0 bottom-0 block w-full bg-white">
+        <div class="flex flex-row justify-between">
+            <div class="flex flex-row gap-4 items-center">
+                <div>
+                    <span class="font-sans font-light md:font-medium">
+                        Made with
+                        <span class="text-red-600">
+                            <i class="fa-solid fa-heart"></i>
+                        </span> by
+                        <a href="https://github.com/nihalebr" target="_blank">
+                            <i class="fa-brands fa-github-alt"></i>
+                            @nihalebr
+                        </a>
+                    </span>
+                </div>
+            </div>
+            <div class="flex flex-row gap-4">
+                <div>
+                    <span class="font-sans font-light md:font-medium">
+                        <a href="https://twitter.com/EbrahimNihal1" target="_blank">
+                            <i class="text-twitter fa-brands fa-twitter"></i>
+                            @EbrahimNihal1
+                        </a>
+                    </span>
+                </div>
+                <div>
+                    <span class="font-sans font-light md:font-medium">
+                        <a href="https://t.me/ebrahimnihal" target="_blank">
+                            <i class="text-telegram fa-brands fa-telegram"></i>
+                            @ebrahimnihal
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        console.info(JSON.parse(localStorage.getItem('pid')));
+
+        function getData() {
+            return {
+                order: {
+                    pid: [],
+                    totalPrice: 0,
+                },
+                count: 0,
+                openUser: false,
+                openMobile: true,
+                show: true,
+                removeFromCart(event) {
+                    if (this.order.pid.includes(event.target.parentElement.dataset.pid)) {
+                        this.order.pid.splice(this.order.pid.indexOf(event.target.parentElement.dataset.pid), 1);
+                        this.order.totalPrice -= parseInt(event.target.parentElement.dataset.price);
+                        this.count--;
+                        document.getElementById(event.target.parentElement.dataset.pid).remove();
+                        console.log(this.order);
+                        localStorage.setItem('pid', JSON.stringify(this.order.pid));
+                        localStorage.setItem('totalPrice', JSON.stringify(this.order.totalPrice));
+                        localStorage.setItem('count', JSON.stringify(this.count));
+                    }
+                },
+                init() {
+                    if (localStorage.getItem('pid') != null) {
+                        this.order.pid = JSON.parse(localStorage.getItem('pid'));
+                        this.order.totalPrice = JSON.parse(localStorage.getItem('totalPrice'));
+                        this.count = JSON.parse(localStorage.getItem('count'));
+                    }
+                },
+                viewCart() {
+                    axios.post('test.php', {
+                        pid: this.order.pid,
+                        totalPrice: this.order.totalPrice,
+                        count: this.count,
+                    }).then(response => {
+                        console.trace(response.data);
+                        this.show = false;
+                    });
+                },
+
+            }
+        }
+    </script>
+</body>
+
+</html>

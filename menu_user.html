@@ -1,0 +1,53 @@
+<header class="flex justify-between items-center h-20 p-5 bg-gray-800 static float-none ">
+    <div class="relative" @mouseleave="openMobile=window.innerWidth<768?false:true"
+        @resize.window="openMobile = window.innerWidth>768?true:false;show=window.innerWidth<768?true:false">
+        <div x-cloak x-init="show = window.innerWidth<768?true:false" x-show="show" @mouseover="openMobile= true"
+            x-cloak><i class="text-white fa-solid fa-bars"></i></div>
+        <nav class="flex flex-col z-50 md:z-0 bg-white text-gray-600  md:text-white w-56 p-2 rounded-md absolute md:static md:top-0 md:bg-gray-800 md:flex-row items-start gap-4"
+            x-show="openMobile" x-init="openMobile = window.innerWidth>768?true:false"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform scale-90"
+            x-transition:enter-end="opacity-100 transform scale-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 transform scale-100"
+            x-transition:leave-end="opacity-0 transform scale-90">
+            <a href="../agmegrade/view_products.php"
+                class="hover:text-black md:hover:bg-white shrink-0 p-2 rounded-md font-bold">View Products</a>
+            <a href="../agmegrade/user_orders.php"
+                class="hover:text-black md:hover:bg-white  shrink-0 p-2 rounded-md font-bold">Previous
+                Orders</a>
+        </nav>
+    </div>
+    <div class="flex items-center align-middle gap-4">
+        <div class="text-white hover:bg-white hover:text-black p-2 relative rounded-md" @click="viewCart()">
+            <i class="fa-solid fa-cart-arrow-down fa-2x"></i>
+            <span class='bg-slate-400 text-black text-xs px-2 font-bold rounded-full absolute top-0 -right-0.5'
+                x-text="count"></span>
+        </div>
+        <div class="hover:bg-white shrink-0 p-2 rounded-md relative" @mouseleave="openUser=false">
+            <img class="h-9 w-9 object-cover shadow-2xl shadow-vue rounded-full"
+                src='https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80'
+                alt="profile image" @mouseover="openUser= true" />
+            <div class="absolute h-auto z-50" x-show="openUser" x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 transform scale-90"
+                x-transition:enter-end="opacity-100 transform scale-100"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100 transform scale-100"
+                x-transition:leave-end="opacity-0 transform scale-90" x-cloak>
+                <ul class="top-3 -left-32 w-44 relative bg-white rounded-md shadow px-6 py-8">
+                    <!-- <li class="py-1"><a
+                            class="block text-gray-600 text-base font-bold hover:text-black cursor-pointer">View
+                            Profile
+                        </a></li>
+                    <li class="py-1"><a
+                            class="block text-gray-600 text-base font-bold hover:text-black cursor-pointer">Edit
+                            Profile
+                        </a></li> -->
+                    <li class="py-1"><a class="block text-gray-600 text-base font-bold hover:text-black cursor-pointer"
+                            href="logout.php">Logout
+                        </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
