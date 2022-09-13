@@ -235,17 +235,17 @@ if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
                 <span class="text-xl font-medium text-gray-100 block pb-3">Address Details</span>
 
                 <div class="flex justify-center flex-col pt-3">
-                  <label class="text-xs text-gray-200 ">Full Name</label>
+                  <label class="text-xs text-gray-200 ">Full Name <span class="text-red-600">*</span> </label>
                   <?php if ($_SESSION["userName"] != null) $Uname = $_SESSION["userName"];
                   echo
                   "<input type='text' class='focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4' x-model='formData.name' placeholder='$Uname'>"; ?>
                 </div>
                 <div class="flex justify-center flex-col pt-3">
-                  <label class="text-xs text-gray-200 ">Mobile Number</label>
+                  <label class="text-xs text-gray-200 ">Mobile Number <span class="text-red-600">*</span></label>
                   <input type="tel" pattern="[0-9]{10}" class="focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4" x-model="formData.phoneNumber">
                 </div>
                 <div class="flex justify-center flex-col pt-3">
-                  <label class="text-xs text-gray-200 ">Address lane 1</label>
+                  <label class="text-xs text-gray-200 ">Address lane 1 <span class="text-red-600">*</span></label>
                   <input type="text" class="focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4" placeholder="Flat, House no., Building, Company, Apartment" x-model="formData.addressLane1">
                 </div>
                 <div class="flex justify-center flex-col pt-3">
@@ -253,16 +253,16 @@ if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
                   <input type="text" class="focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4" placeholder="Area, Street, Sector, Village" x-model="formData.addressLane2">
                 </div>
                 <div class="flex justify-center flex-col pt-3">
-                  <label class="text-xs text-gray-200 ">City</label>
+                  <label class="text-xs text-gray-200 ">City <span class="text-red-600">*</span></label>
                   <input type="text" class="focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4" placeholder="City" x-model="formData.city">
                 </div>
                 <div class="flex justify-center flex-col pt-3">
-                  <label class="text-xs text-gray-200 ">Landmark</label>
+                  <label class="text-xs text-gray-200 ">Landmark <span class="text-red-600">*</span></label>
                   <input type="text" class="focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4" placeholder="Eg: near apollo hospital" x-model="formData.landmark">
                 </div>
                 <div class="grid grid-cols-2 gap-2 pt-2 mb-3">
                   <div class="flex justify-center flex-col pt-3">
-                    <label class="text-xs text-gray-200 ">State</label>
+                    <label class="text-xs text-gray-200 ">State <span class="text-red-600">*</span></label>
                     <select name="state" id="state" class="bg-gray-800 text-white" x-model="formData.state">
                       <option value="Andhra Pradesh">Andhra Pradesh</option>
                       <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
@@ -303,13 +303,13 @@ if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
                     </select>
                   </div>
                   <div class="flex justify-center flex-col pt-3">
-                    <label class="text-xs text-gray-200">PinCode</label>
+                    <label class="text-xs text-gray-200">PinCode <span class="text-red-600">*</span></label>
                     <input type="text" pattern="^[1-9]{1}[0-9]{2}\s{0,1}[0-9]{3}$" maxlength="7" class="focus:outline-none w-full h-6 bg-gray-800 text-white placeholder-gray-300 text-sm border-b border-gray-600 py-4" x-model="formData.pincode" placeholder="6 Digit PinCode">
                   </div>
                 </div>
-                <button class="h-12 w-full bg-blue-500 rounded focus:outline-none text-white hover:bg-blue-600" @click="checkout($event)">Check
+                <span class="text-red-600">*</span> <span class="text-xs text-gray-200">Required fields</span>
+                <button class="h-12 mt-3 w-full bg-blue-500 rounded focus:outline-none text-white hover:bg-blue-600" @click="checkout($event)">Check
                   Out</button>
-
               </div>
             </div>
           </div>
@@ -393,7 +393,6 @@ if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
           if (
             !this.formData.name.length ||
             !this.formData.addressLane1.length ||
-            !this.formData.addressLane2.length ||
             !this.formData.city.length ||
             !this.formData.landmark.length ||
             !this.formData.phoneNumber.length ||
@@ -425,8 +424,12 @@ if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
             state: this.formData.state,
             pincode: this.formData.pincode,
           }).then(Response => {
-            console.log(Response.data);
-            if (Response.data == "success") {
+            console.log(Response.data.data);
+            if (Response.data.data == "success") {
+              localStorage.removeItem('pid');
+              localStorage.removeItem('totalPrice');
+              localStorage.removeItem('count');
+              this.updateCart();
               location.replace('user_orders.php');
             }
           });
